@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Watermark Cleaner</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<main>
+  <h1 data-i18n="title">AI Watermark Cleaner</h1>
+  <p class="subtitle" data-i18n="subtitle">Remove AI watermarks locally. Files never leave your device.</p>
+
+  <div class="controls">
+    <label class="field">Language
+      <select id="lang" aria-label="Language">
+        <option value="en" selected>English</option>
+        <option value="tr">Türkçe</option>
+        <option value="de">Deutsch</option>
+        <option value="fr">Français</option>
+        <option value="es">Español</option>
+      </select>
+    </label>
+  </div>
+
+  <form id="clean-form" enctype="multipart/form-data">
+    <div class="controls">
+      <label class="field"><span data-i18n="source_label">Source</span>
+        <select id="source" name="source">
+          {% for s in sources %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <div class="drop" id="drop">
+      <span data-i18n="drop">Drop a file here or click to choose</span>
+      <input type="file" id="file" name="file" accept=".pdf,.png,.jpg,.jpeg,.pptx" required>
+    </div>
+
+    <p><button type="submit" id="submit-btn" data-i18n="clean_btn">Clean file</button></p>
+  </form>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <img id="preview" alt="preview">
+  <p class="note" data-i18n="synth_note">Synthetic test files may be flagged by the detector. This is expected.</p>
+</main>
+<script src="/static/i18n.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
