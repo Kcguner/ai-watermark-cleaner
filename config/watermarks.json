@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "signatures": [
+    {
+      "source": "gamma",
+      "type": "footer_band",
+      "version_tested": "2026-08",
+      "description": "Gamma PDF/PPTX alt bandi: alt %7 yukseklik, acik gri zemin",
+      "params": {"band_ratio": 0.07, "bg_hint": [245, 245, 245]},
+      "fallback": "crop_bottom_band"
+    },
+    {
+      "source": "gemini",
+      "type": "corner_badge",
+      "version_tested": "2026-08",
+      "description": "Nano Banana kosesi: sag-alt 180x48 bolge, yari-saydam",
+      "params": {"corner": "bottom_right", "w": 180, "h": 48, "inpaint_radius": 3},
+      "fallback": "inpaint_corner",
+      "limits": "SynthID piksellere gomulu — gorunur rozet silinir, SynthID kalabilir"
+    },
+    {
+      "source": "generic",
+      "type": "overlay_text",
+      "version_tested": "n/a",
+      "description": "Bilinmeyen kaynak: kullanici manuel bolge secer",
+      "params": {},
+      "fallback": "manual_box"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+"""Watermark cleaner package."""
