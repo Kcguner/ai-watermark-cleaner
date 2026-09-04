@@ -14,5 +14,7 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Generate test fixtures
+        run: python tests/fixtures/make_fixtures.py
       - name: Run tests
         run: python -m pytest -q
