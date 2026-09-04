@@ -1,10 +1,6 @@
-"""PDF temizleyici: alt-band metin/vektor icin redaction, gomulu raster icin inpaint."""
+"""PDF cleaner: text/vector redaction + white overlay for raster images intersecting band (inpaint of embedded raster is out of scope)."""
 from __future__ import annotations
 import fitz  # PyMuPDF
-from PIL import Image
-import io
-import cv2
-import numpy as np
 from cleaners.metadata_cleaner import strip_metadata_pdf
 
 
@@ -20,11 +16,37 @@ def _redact_band(page: fitz.Page, band_ratio: float) -> int:
                 if fitz.Rect(span["bbox"]).intersects(band):
                     page.add_redact_annot(fitz.Rect(span["bbox"]), fill=(1, 1, 1))
                     hits += 1
-    # Vektor cizimler: bandla kesisen drawing'leri beyazla kapat
+    # Vector drawings: cover drawings intersecting the band with white
     for d in page.get_drawings():
         if fitz.Rect(d["rect"]).intersects(band):
             page.draw_rect(d["rect"], color=None, fill=(1, 1, 1), overlay=True)
             hits += 1
+    # Raster coverage: white overlay for embedded images intersecting band
+    for img in page.get_images(full=True):
+        xref = img[0]
+        rects: list = []
+        try:
+            rects = [page.get_image_bbox(xref)]
+        except Exception:
+            rects = []
+        if not rects:
+            try:
+                rects = [page.get_image_bbox(img)]
+            except Exception:
+                rects = []
+        if not rects:
+            try:
+                rects = list(page.get_image_rects(xref) or [])
+            except Exception:
+                continue
+        for bbox in rects:
+            try:
+                if bbox.intersects(band):
+                    inter = bbox & band
+                    page.draw_rect(inter, color=None, fill=(1, 1, 1), overlay=True)
+                    hits += 1
+            except Exception:
+                continue
     if hits:
         page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
     return hits
@@ -39,4 +61,4 @@ def clean_pdf(in_path: str, out_path: str, signature: dict) -> dict:
     doc.ez_save(out_path)  # garbage-collect + deflate
     n = len(doc)
     doc.close()
-    return {"pages": n, "redactions": total_hits, "note": "SynthID gomulu raster varsa kalabilir"}
+    return {"pages": n, "redactions": total_hits, "note": "Embedded raster SynthID may remain; white overlay applied where raster intersects band"}
