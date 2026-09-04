@@ -1,0 +1,13 @@
+﻿__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+build/
+*.spec
+.agent/
+.agents/
+.claude/
+samples/*
+!samples/.gitkeep
+tests/fixtures/sample_gamma.*
